@@ -69,7 +69,9 @@ content.click()
 chapter_list_ele = (AppiumBy.ID,"com.zhao.myreader:id/ll_chapter_list")
 chapter_list = Wait(driver,10).until(EC.visibility_of_element_located(chapter_list_ele))
 chapter_list.click()
-chapter_lists = driver.find_elements(AppiumBy.XPATH,'//*[@resource-id="com.zhao.myreader:id/lv_chapter_list"]/android.widget.LinearLayout')
+
+chapter_lists_ele = (AppiumBy.XPATH,'//*[@resource-id="com.zhao.myreader:id/lv_chapter_list"]/android.widget.LinearLayout')
+chapter_lists = Wait(driver,10).until(EC.visibility_of_any_elements_located(chapter_lists_ele))
 book_chapter = dict()
 #for i in chapter_lists:
 #    book_chapter.append(i.find_element(AppiumBy.ID,"com.zhao.myreader:id/tv_chapter_title").text)
