@@ -15,6 +15,8 @@ import random
 from appium import webdriver
 from appium.webdriver.common.appiumby import AppiumBy
 
+from Options import Options
+
 def test():
     """
     验证通过搜索的功能搜索的书籍，与书城中获取的书籍是相同的
@@ -34,15 +36,18 @@ def test():
     print("你好")
     # 2.连接方式2：不知道活动名和包名
     #第一步封装driver 会话请求数据
-    caps = {
-        "appium:deviceName": "emulator-5554",
-        "platformName": "Android",
-        "appium:platformVersion": "7.1.2",
-        "app": "D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk",
-        "fullReset": True, #它会在运行完脚本后帮你卸载掉软件，默认为False不卸载
-        # "noReset":True #它在启动app之前，会清除你的app里面的数据，默认为False重置
-        # "newCommandTimeout : 20 " #服务器等待客户端命令发送的超时时间，超过改时间，如果还没有发送指令，则appium服务器终止会话状态
-    }
+    # caps = {
+    #     "appium:deviceName": "emulator-5554",
+    #     "platformName": "Android",
+    #     "appium:platformVersion": "7.1.2",
+    #     "app": "D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk",
+    #     "fullReset": False, #它会在运行完脚本后帮你卸载掉软件，默认为False不卸载
+    # #     "noReset": True,#它在启动app之前，会清除你的app里面的数据，默认为False重置
+    # #     #"newCommandTimeout : 20 ", # 服务器等待客户端命令发送的超时时间，超过改时间，如果还没有发送指令，则appium服务器终止会话状态
+    #  }
+
+    caps = Options().app("D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk")["app"]
+    print(caps)
     driver = webdriver.Remote("http://127.0.0.1:4723/wd/hub", caps)
     driver.implicitly_wait(10)  # 隐形等待时间
     # driver.wait_activity(activity="",timeout=10) #等待某个avtivity的资源加载完成
