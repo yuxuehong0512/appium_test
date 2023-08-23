@@ -31,7 +31,7 @@ class Options:
     def __device_name(self, device=str()):
 
         if device:  # 如果device  不是空字符串
-            self.__option.update({"deviceName": device})
+            self.__option.update({"appium:deviceName": device})
         else:
             devices = os.popen("adb devices")  # 使用os.popen 可以获取程序运行完之后的数据
             result = [i for i in devices.read().split("\n") if i != ""]  # 列表推导式里面嵌入if判断，筛选出不为空的数据
@@ -43,7 +43,7 @@ class Options:
                     for index, value in enumerate(result):  # 通过内置函数enumerate 方法 同时获得 列表中的数据及其数据的下标；其中 index 为下标；value为值
                         if index > 0:  # 如果 index 大于0 ；也就是返回的数据中存在 device name 则过滤掉多余的语句，仅对可以使用的device 进行存贮
                             _device = value.split()[0]
-                            self.__option.update({"deviceName": _device})  # 存储 数据 device name
+                            self.__option.update({"appium:deviceName": _device})  # 存储 数据 device name
             else:
                 raise ValueError(f"无法获取设备信息; 运行了 adb 命令： adb devices  得到结果 ：{devices.read()}")
         return self
@@ -57,10 +57,10 @@ class Options:
                 shell_result = 'Android'
             self.__option.update({"platformName": shell_result})
         if version:
-            self.__option.update({"platformVersion": version})
+            self.__option.update({"appium:platformVersion": version})
         else:
             shell_result = os.popen("adb shell getprop ro.build.version.release").read().strip()
-            self.__option.update({"platformVersion": shell_result})
+            self.__option.update({"appium:platformVersion": shell_result})
         return self
 
     def no_reset(self,value=True):
@@ -106,7 +106,7 @@ class Options:
 
     def app(self,value):
         self.__option.update({"app": value})
-        return self.__option
+        return self
 
 
 if __name__ == "__main__":
@@ -120,5 +120,6 @@ if __name__ == "__main__":
         # "newCommandTimeout : 20 " #服务器等待客户端命令发送的超时时间，超过改时间，如果还没有发送指令，则appium服务器终止会话状态
     }
 
-    print(Options().full_reset().no_reset().command_timeout(30).options(**caps))
+    #print(Options().full_reset().no_reset().command_timeout(30).options(**caps))
     # print(Options().app("D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk"))
+    print(Options().app("D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk").options())
