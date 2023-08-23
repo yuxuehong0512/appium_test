@@ -103,10 +103,7 @@ def test():
     wait_clickable(driver, *PageObject.search).click()
 
     # 输入随机获取的书籍名称
-    wait_visibility(driver, *PageObject.search_key).send_keys(book_name)
-
-    # 搜索书籍
-    wait_visibility(driver, *PageObject.search_conform).click()
+    PageObject().search_action(driver, book_name) #将脚本中的动作封装
 
     # 获取所有的章节目录
     search_books_elements = driver.find_elements(MobileBy.XPATH,
