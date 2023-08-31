@@ -49,45 +49,51 @@ def test():
     #  }
 
     caps = Options().app("D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk").options()
+
     driver = webdriver.Remote(command_executor="http://127.0.0.1:4723/wd/hub", desired_capabilities=caps)
     # driver.implicitly_wait(10)  # 隐形等待时间
     # driver.wait_activity(activity="",timeout=10) #等待某个avtivity的资源加载完成
-    wait_clickable(driver, *PageObject.city).click()
-    book_elements = wait_visibility_all(driver, *PageObject.book_list)
+
+    #进入书城界面
+    wait_clickable(driver, *PageObject.Button.city).click()
+
+    #获取显示的所有书籍名称
+    book_elements = wait_visibility_all(driver, *PageObject.List.book_list)
 
     """
     b.随机获取一本书,为验证数据点
     """
 
     # 使用随机数构建方式，获取一个在规定范围内的随机数作为元素的的下标
-
     rand_index = random.randint(0, len(book_elements) - 1)
-    print(rand_index)
+
     book_element = book_elements[rand_index]
 
     # c.通过随机指定的书去获取验证数据
-    book_name = wait_visibility(driver, *PageObject.city_book_name).text  # 获取书名
-    book_desc = wait_visibility(driver, *PageObject.city_book_desc).text  # 获取简介
-    book_author = wait_visibility(driver, *PageObject.city_book_author).text  # 获取作者名
+    book_name = wait_visibility(driver, *PageObject.Button.city_book_name).text  # 获取书名
+    print(book_name)
+    book_desc = wait_visibility(driver, *PageObject.Button.city_book_desc).text  # 获取简介
+    book_author = wait_visibility(driver, *PageObject.Button.city_book_author).text  # 获取作者名
 
     # 获取各章节的名字，并将各章节名字储存到字典中
     book_element.click()
 
-    wait_clickable(driver, *PageObject.read_book).click()
+    wait_clickable(driver, *PageObject.Button.read_book).click()
 
-    wait_clickable(driver, *PageObject.book_content).click()
+    wait_clickable(driver, *PageObject.Button.book_content).click()
 
-    wait_clickable(driver, *PageObject.chapter_list).click()
+    wait_clickable(driver, *PageObject.Button.chapter_list).click()
 
-    chapter_lists = wait_visibility_all(driver, *PageObject.chapter_list_info)
+    #获取书籍的显示的所有章节目录
+    chapter_lists = wait_visibility_all(driver, *PageObject.List.chapter_list_info)
 
-    book_chapter = dict()
+    book_chapters = dict()
     # for i in chapter_lists:
     #    book_chapter.append(i.find_element(MobileBy.ID,"com.zhao.myreader:id/tv_chapter_title").text)
     for index, element in enumerate(chapter_lists):
         locator = (MobileBy.ID, 'com.zhao.myreader:id/tv_chapter_title')
 
-        book_chapter.update({index: wait_visibility(driver, *locator).text})
+        book_chapters.update({index: wait_visibility(element, *locator).text})
 
     """
     d、再去搜索里面按照该书名进行搜索
@@ -100,52 +106,50 @@ def test():
     time.sleep(2)
 
     # 进入搜索界面
-    wait_clickable(driver, *PageObject.search).click()
+    wait_clickable(driver, *PageObject.Button.search).click()
 
     # 输入随机获取的书籍名称
-    PageObject().search_action(driver, book_name) #将脚本中的动作封装
+    PageObject(driver).search_action(book_name) #将脚本中的动作封装
 
     # 获取所有的章节目录
-    search_books_elements = driver.find_elements(MobileBy.XPATH,
-                                                 '//*[@resource-id="com.zhao.myreader:id/lv_search_books_list"]/android.widget.LinearLayout')
+    search_books = wait_visibility_all(driver, *PageObject.List.search_books_list)
     search_index = None
-    for i in search_books_elements:
-        search_book_name = i.find_element(MobileBy.ID, 'com.zhao.myreader:id/tv_book_name').text
-        if search_book_name == book_name:
-            search_index = search_books_elements.index(i)
+    for i in search_books:
+        bn = wait_visibility(i, *PageObject.Button.city_book_name).text
+        if book_name == bn:
+            search_index = search_books.index(i)
 
     if search_index is None:
         raise ValueError("没有找到 《{}》 这本书".format(book_name))
     else:
-
-        search_book = search_books_elements[search_index]
+        search_book = search_books[search_index]
         # 获取书籍名
-        search_book_name = wait_visibility(driver, *PageObject.city_book_name).text
+        search_book_name = wait_visibility(driver, *PageObject.Button.city_book_name).text
         # 获取书籍简介
-        search_book_desc = wait_visibility(driver, *PageObject.city_book_desc).text
+        search_book_desc = wait_visibility(driver, *PageObject.Button.city_book_desc).text
         # 获取书籍作者
-        search_book_author = wait_visibility(driver, *PageObject.city_book_author).text
+        search_book_author = wait_visibility(driver, *PageObject.Button.city_book_author).text
         # 打开选中书籍
         search_book.click()
-        search_book_chapter = dict()
+        search_book_chapters = dict()
         # 点击开始阅读
-        wait_clickable(driver, *PageObject.read_book).click()
+        wait_clickable(driver, *PageObject.Button.read_book).click()
 
         # 点击书籍文字
-        wait_clickable(driver, *PageObject.book_content).click()
+        wait_clickable(driver, *PageObject.Button.book_content).click()
 
         # 点击目录
-        wait_clickable(driver, *PageObject.chapter_list).click()
+        wait_clickable(driver, *PageObject.Button.chapter_list).click()
 
         # 将目录中章节顺序和章节内容存储在字典中
-        search_chapter_lists = wait_visibility_all(driver, *PageObject.chapter_list_info)
+        search_chapter_lists = wait_visibility_all(driver, *PageObject.List.chapter_list_info)
 
         for index, element in enumerate(search_chapter_lists):
             locator = (MobileBy.ID, "com.zhao.myreader:id/tv_chapter_title")
-            search_book_chapter.update(
+            search_book_chapters.update(
                 {index: wait_visibility(element, *locator).text})
 
-    assert book_name == search_book_name and book_desc == search_book_desc and book_author == search_book_author, "断言失败，数据不一致"
+    assert book_name == search_book_name and book_desc == search_book_desc and book_author == search_book_author and book_chapters == search_book_chapters, "断言失败，数据不一致"
 
 
 if __name__ == "__main__":

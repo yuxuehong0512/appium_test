@@ -1,7 +1,5 @@
 # author_='Yuxuehong';
 # date: 2023/8/17 21:27
-# author_='Yuxuehong';
-# date: 2023/8/17 13:28
 
 from 封装的代码 import *
 import time
@@ -10,6 +8,7 @@ import Context
 
 from appium import webdriver
 from appium.webdriver.common.appiumby import AppiumBy
+
 
 
 def test():
@@ -21,24 +20,24 @@ def test():
     a.打开读书屋，进入书城
     """
     # 1.连接方式一：已知活动名和包名
-    # caps = {
-    #     "appium:deviceName": "emulator-5554",
-    #     "platformName": "Android",
-    #     "appium:platformVersion": "7.1.2",
-    #     "appium:appPackage": "com.zhao.myreader",
-    #     "appium:appActivity": "com.zhao.myreader.ui.home.MainActivity"
-    # }
-
-    # 2.连接方式2：不知道活动名和包名
     caps = {
         "appium:deviceName": "emulator-5554",
         "platformName": "Android",
         "appium:platformVersion": "7.1.2",
-        "app": "D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk",
-        "fullReset": True,  # 它会在运行完脚本后帮你卸载掉软件，默认为False不卸载
+        "appium:appPackage": "com.zhao.myreader",
+        "appium:appActivity": "com.zhao.myreader.ui.home.MainActivity"
+    }
+
+    # 2.连接方式2：不知道活动名和包名
+    # caps = {
+    #     "appium:deviceName": "emulator-5554",
+    #     "platformName": "Android",
+    #     "appium:platformVersion": "7.1.2",
+    #     "app": "D://2023-L/python+selenium/app/01app自动化环境的搭建/dushuwu.apk",
+    #     "fullReset": True,  # 它会在运行完脚本后帮你卸载掉软件，默认为False不卸载
         # "noReset":True #它在启动app之前，会清除你的app里面的数据，默认为False重置
         # "newCommandTimeout : 20 " #服务器等待客户端命令发送的超时时间，超过改时间，如果还没有发送指令，则appium服务器终止会话状态
-    }
+    # }
     driver = webdriver.Remote("http://127.0.0.1:4723/wd/hub", caps)
     driver.implicitly_wait(10)  # 隐形等待时间
     # driver.wait_activity(activity="",timeout=10) #等待某个avtivity的资源加载完成

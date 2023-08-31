@@ -54,9 +54,9 @@ def test():
     # driver.implicitly_wait(10)  # 隐形等待时间
     # driver.wait_activity(activity="",timeout=10) #等待某个avtivity的资源加载完成
     driver.find_element(MobileBy.ACCESSIBILITY_ID, "书城").click()
-    lacator = (MobileBy.XPATH,
+    locator = (MobileBy.XPATH,
                '//androidx.recyclerview.widget.RecyclerView[@resource-id="com.zhao.myreader:id/rv_book_list"]/android.widget.LinearLayout')
-    book_elements = wait_visibility_all(driver, *lacator)
+    book_elements = wait_visibility_all(driver, *locator)
 
     """
     b.随机获取一本书,为验证数据点
@@ -75,23 +75,23 @@ def test():
 
     # 获取各章节的名字，并将各章节名字储存到字典中
     book_element.click()
-    lacator = (MobileBy.ID, 'com.zhao.myreader:id/btn_read_book')
-    read_book = wait_clickable(driver, *lacator)
+    locator = (MobileBy.ID, 'com.zhao.myreader:id/btn_read_book')
+    read_book = wait_clickable(driver, *locator)
     read_book.click()
-    lacator = (MobileBy.ID, "com.zhao.myreader:id/tv_content")
-    content = wait_clickable(driver, *lacator)
+    locator = (MobileBy.ID, "com.zhao.myreader:id/tv_content")
+    content = wait_clickable(driver, *locator)
     content.click()
-    lacator = (MobileBy.ID, "com.zhao.myreader:id/ll_chapter_list")
-    chapter_list = wait_clickable(driver, *lacator)
+    locator = (MobileBy.ID, "com.zhao.myreader:id/ll_chapter_list")
+    chapter_list = wait_clickable(driver, *locator)
     chapter_list.click()
-    lacator = (MobileBy.XPATH, '//*[@resource-id="com.zhao.myreader:id/lv_chapter_list"]/android.widget.LinearLayout')
-    chapter_lists = wait_visibility_all(driver, *lacator)
-    book_chapter = dict()
+    locator = (MobileBy.XPATH, '//*[@resource-id="com.zhao.myreader:id/lv_chapter_list"]/android.widget.LinearLayout')
+    chapter_lists = wait_visibility_all(driver, *locator)
+    book_chapters = dict()
     # for i in chapter_lists:
     #    book_chapter.append(i.find_element(MobileBy.ID,"com.zhao.myreader:id/tv_chapter_title").text)
     for index, element in enumerate(chapter_lists):
-        locatior = (MobileBy.ID, "com.zhao.myreader:id/tv_chapter_title")
-        book_chapter.update({index: wait_visibility(driver, *locatior).text})
+        locator = (MobileBy.ID, "com.zhao.myreader:id/tv_chapter_title")
+        book_chapters.update({index: wait_visibility(element, *locator).text})
 
     """
     d、再去搜索里面按照该书名进行搜索
@@ -111,8 +111,8 @@ def test():
     search_key.send_keys(book_name)
 
     # 搜索书籍
-    lacator = (MobileBy.ID, "com.zhao.myreader:id/tv_search_conform")
-    search_conform = wait_visibility(driver, *lacator)
+    locator = (MobileBy.ID, "com.zhao.myreader:id/tv_search_conform")
+    search_conform = wait_visibility(driver, *locator)
     search_conform.click()
 
     # 获取所有的章节目录
@@ -137,7 +137,7 @@ def test():
         search_book_author = search_book.find_element(MobileBy.ID, 'com.zhao.myreader:id/tv_book_author').text
         # 打开选中书籍
         search_book.click()
-        search_book_chapter = dict()
+        search_book_chapters = dict()
         # 点击开始阅读
         locator = (MobileBy.ID, 'com.zhao.myreader:id/btn_read_book')
         search_read_book = wait_visibility(driver, *locator)
@@ -156,10 +156,10 @@ def test():
         search_chapter_lists = wait_visibility_all(driver, *locator)
         for index, element in enumerate(search_chapter_lists):
             locator = (MobileBy.ID, "com.zhao.myreader:id/tv_chapter_title")
-            search_book_chapter.update(
+            search_book_chapters.update(
                 {index: wait_visibility(element, *locator).text})
 
-    assert book_name == search_book_name and book_desc == search_book_desc and book_author == search_book_author and book_chapter == search_book_chapter, "断言失败，数据不一致"
+    assert book_name == search_book_name and book_desc == search_book_desc and book_author == search_book_author and book_chapters == search_book_chapters, "断言失败，数据不一致"
 
 
 if __name__ == "__main__":
